@@ -3,12 +3,12 @@
 /.TEST
 /.TEMP
 
-/options.lua
-/options.dev.lua
-/params.lua
-/params.dev.lua
+options.lua
+options.dev.lua
+params.lua
+params.dev.lua
 
-/todo.md
+todo.md
 
 .vscode
 .secrets
