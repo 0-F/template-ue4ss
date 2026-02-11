@@ -1,0 +1,12 @@
+services:
+  release:
+    image: node:24-slim
+    volumes:
+      - .:/app
+      - ./.git:/app/.git
+      - ${HOME:-${USERPROFILE}}/.gitconfig:/root/.gitconfig:ro
+    working_dir: /app
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    command: >
+      sh -c "apt-get update && apt-get install -y git && npm install && npx release-it --dry-run"
