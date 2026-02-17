@@ -25,6 +25,7 @@ local function isFileExists(filename)
     end
 end
 
+---@return MOD_OPTIONS
 local function loadOptions()
     local file = string.format([[%s\options.lua]], modInfo.currentModDirectory)
 
