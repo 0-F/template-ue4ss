@@ -3,6 +3,9 @@
 /.TEST
 /.TEMP
 
+node_modules/
+package-lock.json
+
 options.lua
 options.dev.lua
 params.lua
@@ -10,6 +13,7 @@ params.dev.lua
 
 todo.md
 
+*.code-workspace
 .vscode
 .secrets
 .env
