@@ -39,7 +39,7 @@ local function loadOptions()
         os.execute(cmd)
     end
 
-    dofile(file)
+    return dofile(file)
 end
 
 local function loadDevOptions()
