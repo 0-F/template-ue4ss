@@ -15,7 +15,7 @@ end)()
 
 ---@param filename string
 ---@return boolean
-local function isFileExists(filename)
+local function doesFileExists(filename)
     local file = io.open(filename, "r")
     if file ~= nil then
         io.close(file)
@@ -29,7 +29,7 @@ end
 local function loadOptions()
     local file = string.format([[%s\options.lua]], modInfo.currentModDirectory)
 
-    if not isFileExists(file) then
+    if not doesFileExists(file) then
         local cmd = string.format([[copy "%s\options.example.lua" "%s\options.lua"]],
             modInfo.currentModDirectory,
             modInfo.currentModDirectory)
@@ -45,7 +45,7 @@ end
 local function loadDevOptions()
     local file = format([[%s\options.dev.lua]], modInfo.currentDirectory)
 
-    if isFileExists(file) then
+    if doesFileExists(file) then
         dofile(file)
     end
 end
