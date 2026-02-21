@@ -27,10 +27,10 @@ end
 
 ---@return MOD_OPTIONS
 local function loadOptions()
-    local file = string.format([[%s\options.lua]], modInfo.currentModDirectory)
+    local file = format([[%s\options.lua]], modInfo.currentModDirectory)
 
     if not doesFileExists(file) then
-        local cmd = string.format([[copy "%s\options.example.lua" "%s\options.lua"]],
+        local cmd = format([[copy "%s\options.example.lua" "%s\options.lua"]],
             modInfo.currentModDirectory,
             modInfo.currentModDirectory)
 
