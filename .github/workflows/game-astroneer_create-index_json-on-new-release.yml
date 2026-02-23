@@ -1,4 +1,4 @@
-name: Create index.json on new release
+name: (Astroneer) Create index.json on new release
 
 env:
   DOTNET_VERSION: 7.x
