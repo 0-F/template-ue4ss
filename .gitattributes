@@ -1,0 +1,6 @@
+# Handle line endings automatically.
+* text=auto eol=lf
+
+# Ensure Windows batch files keep their specific format.
+*.bat text eol=crlf
+*.cmd text eol=crlf

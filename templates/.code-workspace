@@ -1,0 +1,15 @@
+// See https://go.microsoft.com/fwlink/?LinkId=733558
+// for the documentation about the tasks.json format
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.busted": "lua"
+		},
+		"stylua.targetReleaseVersion": "latest"
+	}
+}

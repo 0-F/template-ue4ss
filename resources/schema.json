@@ -16,7 +16,6 @@
       "items": {
         "type": "string"
       },
-      "minLength": 1,
       "type": [
         "string",
         "array"
@@ -26,6 +25,11 @@
       "description": "The URL to the mod page (e.g., Nexus Mods or GitHub).",
       "format": "uri",
       "minLength": 1,
+      "type": "string"
+    },
+    "repositoryUrl": {
+      "description": "The URL to the project source code.",
+      "format": "uri",
       "type": "string"
     },
     "name": {

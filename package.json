@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "string-content-sort-cli": "^2.0.5"
+  },
+  "scripts": {
+    "sort": "ssort Scripts --use-sort-comments --modify",
+    "sort_tests": "ssort spec --use-sort-comments --modify"
+  }
+}

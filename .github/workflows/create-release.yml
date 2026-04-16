@@ -2,12 +2,14 @@ name: Create a release
 
 env:
   DOTNET_VERSION: 7.x
+  RELEASE_NAME_DIR: .RELEASE
+  ACT: 'false'
 
 on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-      - '!v0.0.0' # The tag "v0.0.0" is used for testing.
+      - '!v0.0.0-act' # The tag "v0.0.0-act" is used for testing.
   workflow_dispatch:
     inputs:
       isDraft:
@@ -20,65 +22,62 @@ permissions:
 
 defaults:
   run:
-    shell: pwsh
+    shell: bash
 
 jobs:
   main-job:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Init
       run: |
-        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+        echo "Runner: $(uname -a)"
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
 
     - name: Set environment variables
       run: |
-        .\ci\set-vars.ps1 -github_ref_name '${{ github.ref_name }}' -github_repository $env:GITHUB_REPOSITORY
+        python ./ci/setup_env.py '${{ github.ref_name }}' "$GITHUB_REPOSITORY"
 
-    - name: Run the game-specific script (if exists)
+    - name: Run the game-specific script
       run: |
-        .\ci\game-specific.ps1
+        script_path="./ci/game_specific.py"
 
     - name: Create release
-      run: .\ci\create-release.ps1
-
-    - name: Create game-specific release
       run: |
-        $scriptPath = Join-Path "games" $env:GAME_NAME "ci" "create-release.ps1"
-        
-        if (Test-Path $scriptPath) {
-          Write-Host "🚀 Running game-specific release script for: $env:GAME_NAME"
-          try {
-            & $scriptPath
-          } catch {
-            Write-Error "❌ Failed to execute script at $scriptPath : $_"
-            exit 1
-          }
-        } else {
-          Write-Host "⚠️ No specific release script found at $scriptPath. Skipping."
-        }
+        python ./ci/create_release.py
 
-    - name: Cleanup draft v0.0.0 releases
-      if: env.ACT == 'true' && startsWith(github.ref, 'refs/tags/') && github.ref_name == 'v0.0.0'
-      run: .\ci\cleanup-draft-releases.ps1 '${{ github.repository }}'
+    - name: Create an additional game-specific release (optional)
+      run: |
+        script_path="games/${GAME_NAME}/ci/create_release.py"
+
+        if [ -f "$script_path" ]; then
+          echo "Running game-specific release script for: ${GAME_NAME}"
+          if ! python "$script_path"; then
+            echo "Failed to execute script at $script_path" >&2
+            exit 1
+          fi
+        else
+          echo "No specific release script found at $script_path. Skipping."
+        fi
+
+    - name: Cleanup draft v0.0.0-act releases
+      if: env.ACT == 'true' && startsWith(github.ref, 'refs/tags/') && github.ref_name == 'v0.0.0-act'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python ./ci/cleanup_draft_releases.py '${{ github.repository }}'
 
     - name: GH Release
-      uses: softprops/action-gh-release@v2.0.4
+      uses: softprops/action-gh-release@v3.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
-          ${{ env.RELEASE_DIR }}/*
-        draft: ${{ inputs.isDraft == true && true || false }}
+          ${{ env.RELEASE_NAME_DIR }}/*
+        draft: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.isDraft == 'true' }}
         body: ""
-
-    - name: Delete temporary tag v0.0.0
-      if: env.ACT == 'true' && startsWith(github.ref, 'refs/tags/') && github.ref_name == 'v0.0.0'
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        Write-Output "Deleting temporary tag v0.0.0"
-        git tag -d v0.0.0 2>$null
-        git push origin :refs/tags/v0.0.0

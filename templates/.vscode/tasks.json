@@ -1,0 +1,125 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "initialization",
+            "type": "shell",
+            "command": "tools/init.ps1"
+        },
+        {
+            "label": "Open Windows Terminal",
+            "type": "process",
+            "command": "pwsh.exe",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "tools/open-wt.ps1",
+                "${workspaceFolderBasename}",
+                "${workspaceFolder}"
+            ],
+            "problemMatcher": [],
+            "options": {
+                "env": {
+                    "ANSICON": "ON"
+                }
+            }
+        },
+        {
+            "label": "Watch busted (external window)",
+            "type": "process",
+            "command": "wt",
+            "args": [
+                "-d",
+                "${workspaceFolder}",
+                "pwsh",
+                "tools/run-watchexec-busted.ps1"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Watch busted+filter (external window)",
+            "type": "process",
+            "command": "wt",
+            "args": [
+                "-d",
+                "${workspaceFolder}",
+                "pwsh",
+                "tools/run-watchexec-busted-with-filter.ps1"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Open Busted filter file",
+            "type": "shell",
+            "command": "code -r ${workspaceFolder}/tools/busted-filter.txt",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "tools/clean.ps1"
+        },
+        {
+            "label": "[tests] luacov report",
+            "type": "shell",
+            "command": "tools/run-luacov-report.ps1"
+        },
+        {
+            "label": "[tests] luacov html report",
+            "type": "shell",
+            "command": "tools/run-luacov-report-html.ps1",
+        },
+        {
+            "label": "[tests] open luacov html report",
+            "type": "shell",
+            "command": "start luacov.report.html",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "ci (act): create release",
+            "type": "shell",
+            "command": "uv run python ci/act/run_act_create_release.py"
+        },
+        {
+            "label": "ci (act): create release + open zip",
+            "type": "shell",
+            "command": "uv run python ci/act/run_act_create_release.py --open-release-zip"
+        },
+        {
+            "label": "ci (act): open act cache folder",
+            "type": "shell",
+            "command": "uv run python ci/act/open_act_cache_dir.py"
+        },
+        {
+            "label": "ci: delete draft release v0.0.0-act",
+            "type": "shell",
+            "command": "uv run python ./ci/delete_draft_release.py --tag v0.0.0-act"
+        },
+        {
+            "label": "Stylua: format project",
+            "type": "shell",
+            "command": "stylua",
+            "args": [
+                "--verify",
+                "Scripts"
+            ]
+        },
+    ]
+}

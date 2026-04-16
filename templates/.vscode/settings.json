@@ -1,0 +1,12 @@
+{
+    "Lua.workspace.library": [
+        "../shared",
+        "${addons}/busted/module/library",
+        "${3rd}/luassert/library",
+        "${addons}/luassert/module/library"
+    ],
+    "Lua.diagnostics.libraryFiles": "Disable",
+    "Lua.workspace.ignoreDir": [
+        ".vscode"
+    ]
+}

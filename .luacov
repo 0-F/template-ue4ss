@@ -1,0 +1,12 @@
+-- luacov configuration file
+-- https://github.com/lunarmodules/luacov
+-- https://lunarmodules.github.io/luacov/doc/modules/luacov.defaults.html
+return {
+    include = {
+        "Scripts/"
+    },
+
+    exclude = {
+        "spec/"
+    },
+}
